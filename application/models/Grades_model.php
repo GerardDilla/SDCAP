@@ -51,7 +51,6 @@ class Grades_model extends CI_Model{
 		$Sem = $this->input->post('getSEM');
 		$SY = $this->input->post('getSY');
 		$Output = '';
-		
 		if(isset($Sem) && isset($SY)){
 		
 				$sql = 
@@ -137,6 +136,7 @@ class Grades_model extends CI_Model{
 					
 					}
 		}
+		
 		return $Output;
 		
 		}

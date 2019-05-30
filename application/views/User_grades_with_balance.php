@@ -27,78 +27,25 @@
         
         <div class="col-md-12" id="ContentContainer"><!--BODY--!-->
         <div class="container row" id="alignment" style="margin-top:50px; margin-bottom:30px; min-height:auto; overflow-y:auto;">
-     
-     
-    <div class="panel-group" id="accordion" style="min-width:250px;" ><!--accordion1--!-->
-    <div class="panel panel-default" ><!--panel1--!-->
-
-      <a data-toggle="collapse" data-parent="#accordion" href="#collapse1"> 	
-      <div class="panel-heading" style="background-color:#666; color:#FFF;">
-        <h4 class="panel-title">
-          Choose Year and Semester: 
-        </h4>
-      </div>
-      </a>
-      
-      <div id="collapse1" class="<?php echo $css; ?>">
-        <div class="panel-body">
-        
-        
-        <form action="<?php echo site_url();?>index.php/Student/grades" method="post" style="margin-top:30px;">
-          <div class="form-group">
-            <label for="sel1">Academic Year:</label>
-            <select class="form-control" name="getSY" id="sel1" onchange="showcont(this.value)">
-
-              <?php
-                echo $resultSY;	
-              ?>
-            
-            </select> 
-          </div>
-        
-          <div id="cont_appear" class="form-group" style="display:none;">
-          <label for="sel1">Semester:</label>
-          <div id="acad_sem">
-          <select class="form-control" name="getSEM" id="sel2">
-          
-        
-          
-          </select> 
-          </div>
-        </div>
-        <button id="btn_appear" class="btn center-block" style="margin:auto; margin-bottom:30px; margin-top:20px; width:100px; display:none;	" name="submit" id="submitD" type="submit">Select</button>
-        </form>
-
-  
-        </div>
-      </div>
-
-
-
-    </div><!--panel1--!-->
-  </div><!--accordion--!-->
-  
-  			
-
+        <hr>
+        <h3>Your account still has a previous balance,<br> Please settle this to view your grades.</h3>
+        <hr>
         <div id="hidden">
         
         <div class="section-to-print">
         
              <?php 	
 			 
-			  //DISPLAYS THE TABLE OUTPUT
+			          //DISPLAYS THE TABLE OUTPUT
                  echo $Grade_Output;
-				 
-				 
 				 
              ?>
              
+        </div>
             
-            </div>
-            
-		 </br>
+		    </br>
          <button class="btn btn-success center-block" data-toggle="modal" data-target="#myModal" style="display:none">Complete List</button>  
-      	 </br>
+      	</br>
       
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog" style="margin-top:50px;" tabindex="-1">

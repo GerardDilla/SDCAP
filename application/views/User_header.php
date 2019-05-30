@@ -473,7 +473,7 @@ $fileT = './Profile/';
 		<li><a style="<?php echo $profile; ?>" href="<?php echo base_url();?>index.php/Student/Profile" class="active"> Profile <span style="font-size:150%; margin-right:10px; margin-top:9px;" class="glyphicon glyphicon-user pull-right"></span></a></li>
         
 		<li ><a style="<?php echo $grades; ?>" href="<?php echo base_url();?>index.php/Student/grades">Grades <span style="font-size:150%; margin-right:10px; margin-top:9px;;" class="glyphicon glyphicon-education pull-right"></span></a></li>
-        
+
 		<li ><a style="<?php echo $balance; ?>" href="<?php echo base_url();?>index.php/Student/balance">Balance <span style="font-size:150%; margin-right:10px; margin-top:9px;" class="glyphicon glyphicon-piggy-bank pull-right"></span></a></li>
         
     <li ><a style="<?php echo $sched; ?>" href="<?php echo base_url();?>index.php/Student/schedule">Schedule <span style="font-size:150%; margin-right:10px; margin-top:9px;" class="glyphicon glyphicon-dashboard pull-right"></span></a></li>
@@ -483,13 +483,7 @@ $fileT = './Profile/';
     <li ><a style="<?php echo $clearance; ?>" href="<?php echo base_url();?>index.php/Student/Clearance">Clearance <span style="font-size:150%; margin-right:10px; margin-top:9px;" class="glyphicon glyphicon-ok-sign pull-right"></span></a></li>
         
     <li><a style="<?php echo $sanctions; ?>; display:none;" href="<?php echo base_url();?>index.php/Student/Sanctions">Violations <span style="font-size:150%; margin-right:10px; margin-top:9px;" class="glyphicon glyphicon-exclamation-sign pull-right"></span></a></li>
-
-        
-        
-
-        
-       
-      
+ 
 	</ul><!--Sidebar nav--!-->
   
     </br>

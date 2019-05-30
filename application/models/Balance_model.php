@@ -28,7 +28,7 @@ class Balance_model extends CI_Model{
 		$sql = "
 		
 		
-			SELECT (tuition_Fee + MISC + OTHER + LAB ) AS `tuition`, semester, schoolyear FROM get_Enrolled_CollegeFees WHERE 			Reference_Number = '$FN' GROUP BY schoolyear DESC, semester DESC LIMIT 1
+			SELECT (tuition_Fee + MISC + OTHER + LAB ) AS `tuition`, semester, schoolyear FROM get_Enrolled_CollegeFees WHERE Reference_Number = '$FN' GROUP BY schoolyear DESC, semester DESC LIMIT 1
 		
 			
 		";
@@ -152,11 +152,139 @@ class Balance_model extends CI_Model{
 		}
 			 
 
-			
-			 
-			
-			 return $Output;
-		}
+		
+		return $Output;
+	}
+	public function GetLatestBalDate($rn){
+
+		$sql =
+		"
+		SELECT id FROM Fees_Enrolled_College 
+		WHERE Reference_Number = '$rn'
+		ORDER BY schoolyear DESC, semester DESC
+		LIMIT 1
+		";
+
+		return $sql;
+	}
+	public function GetLatestBalDate_query($rn){
+
+		$sql =
+		"
+		SELECT * FROM Fees_Enrolled_College 
+		WHERE Reference_Number = '$rn'
+		ORDER BY schoolyear DESC, semester DESC
+		LIMIT 1
+		";
+		$result = $this->db->query($sql);
+
+		return $result;
+	}
+	public function check_Outstandingbal($rn,$sy,$sem){
+
+		$latestdate_id = $this->GetLatestBalDate($rn);
+
+		$sql = 
+		"
+
+		SELECT SUM(InitialPayment + First_Pay + Second_Pay + Third_Pay + Fourth_Pay) AS Fees,semester,schoolyear 
+		FROM `Fees_Enrolled_College` 
+		WHERE `Reference_Number` = '$rn'
+		AND `id` <> ($latestdate_id)
+		ORDER BY schoolyear,semester DESC
+		
+		";
+
+		$result = $this->db->query($sql);
+		
+		return $result;
+	}
+	public function check_totalpaid($rn,$sy,$sem){
+
+		$latestdate_id = $this->GetLatestPaymentDate($rn);
+
+		$sql = 
+		"
+		SELECT SUM(AmountofPayment) AS AmountofPayment,semester, schoolyear 
+		FROM EnrolledStudent_Payments_Throughput WHERE Reference_Number = '$rn' 
+		AND id <> ($latestdate_id)
+		";
+		$result = $this->db->query($sql);
+		
+		return $result;
+	}
+	public function GetLatestPaymentDate($rn){
+
+		$sql =
+		"
+		SELECT id FROM EnrolledStudent_Payments_Throughput 
+		WHERE Reference_Number = '$rn'
+		ORDER BY schoolyear DESC, semester DESC
+		LIMIT 1
+		";
+
+		return $sql;
+	}
+	public function semestralbalance($rn,$sy,$sem){
+
+		$sql = 
+		"
+			SELECT 
+			`Fees`.`tuition_Fee` + SUM(`fees_item`.`Fees_Amount`) AS `Fees`
+			FROM
+			Fees_Enrolled_College AS `Fees` 
+			INNER JOIN Fees_Enrolled_College_Item `fees_item` 
+			ON `Fees`.`id` = `fees_item`.`Fees_Enrolled_College_Id`  
+			WHERE `Fees`.`Reference_Number` = '$rn'
+			AND `Fees`.`semester` = '$sem'
+			AND `Fees`.`schoolyear` = '$sy'
+
+		";
+		$result = $this->db->query($sql);
+		
+		return $result;
+	}
+	public function gettotalpaidsemester($rn,$sy,$sem){
+
+		$sql = 
+		"
+
+		SELECT SUM(AmountofPayment) AS AmountofPayment,semester, schoolyear 
+		FROM EnrolledStudent_Payments_Throughput WHERE Reference_Number = '$rn' AND Semester = '$sem' AND SchoolYear = '$sy' AND valid
+		
+		";
+		$result = $this->db->query($sql);
+		
+		return $result;	
+	}
+	public function getOutstandingbal($rn,$sy,$sem){
+
+		$sql = 
+		"
+
+		SELECT SUM(InitialPayment + First_Pay + Second_Pay + Third_Pay + Fourth_Pay) AS Fees,semester,schoolyear 
+		FROM Fees_Enrolled_College 
+		WHERE Reference_Number = '$rn'
+		
+		";
+
+		$result = $this->db->query($sql);
+		
+		return $result;
+	}
+	public function gettotalpaid($rn,$sy,$sem){
+
+		$sql = 
+		"
+
+		SELECT SUM(AmountofPayment) AS AmountofPayment,semester, schoolyear 
+		FROM EnrolledStudent_Payments_Throughput WHERE Reference_Number = '$rn' 
+		
+		";
+		$result = $this->db->query($sql);
+		
+		return $result;	
+	}
 	
 		
 }

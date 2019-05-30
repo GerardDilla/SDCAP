@@ -35,19 +35,18 @@ class Student extends CI_Controller {
 		$this->load->model('User_login');
 		$data['pass'] = $this->User_login->U_Log();
 		$data['error'] = "";
-		
-		
+
 		if($data['pass'] == 1){
 			
 			
 			redirect('index.php/Student/event','refresh');
 
-			}
+		}
 		else{
 			$this->session->unset_userdata('logged_in');
 			$data['error'] = "Invalid ID or Password";
 			$this->load->view('Portalhome',$data);
-			}
+		}
 	}
 	
 	//**************************PROFILE PAGE****************************///
@@ -76,26 +75,70 @@ class Student extends CI_Controller {
 	{
  		
 		$this->load->model('Grades_model');
-		
+		$this->load->model('Balance_model');
 		$this->load->model('User_login');
-		
 		$data['pass'] = $this->User_login->jumpcheck();
-		$data['resultSY'] = $this->Grades_model->getSY();
-		$data['Grade_Output'] = $this->Grades_model->getGrades();
-		$data['All_Grades'] = $this->Grades_model->AllGrades();
-
 		$data['error'] = "";
 		$data['active'] = "2";
-		if($data['pass'] == 1){
-			
+
+		$rn = $this->session->userdata('Reference_Number');
+		//echo 'RN: '.$rn;
+		$latestbal = $this->Balance_model->GetLatestBalDate_query($rn);
+		if($latestbal->num_rows() == 0){
+			//echo 'no result';
+			return;
+		}
+		foreach($latestbal->result_array() as $latestbal_row){
+			$sy = $latestbal_row['schoolyear'];
+			$sem = $latestbal_row['semester'];
+		}
+		//echo $sy.' '.$sem.'<br>';
+		$outstanding = $this->Balance_model->check_Outstandingbal($rn,$sy,$sem);
+		$totalpaid = $this->Balance_model->check_totalpaid($rn,$sy,$sem);
+		foreach($outstanding->result_array() as $outstanding_row){
+			$ob = $outstanding_row['Fees'];
+		}
+		foreach($totalpaid->result_array() as $totalpaid_row){
+			$tp = $totalpaid_row['AmountofPayment'];
+		}
+		//echo $ob.' '.$tp.'<br>';
+		$bal_check = $ob - $tp;
+		if($bal_check <= 0){
+			$bal_check = 0.00;
+		}
+
+		//Runs command when there 
+		if($bal_check > 0.00){
+			//echo $bal_check.'With balance';
+			//$this->session->unset_userdata('logged_in');
+			//$data['error'] = "Account Still Has previous balance";
 			$this->load->view('User_header',$data);
-			$this->load->view('User_grades',$data);
+			$this->load->view('User_grades_with_balance',$data);
 			$this->load->view('User_footer');
-			}
-		else{
-			$data['error'] = "You must Login first";
-			$this->load->view('Portalhome',$data);
-			}			
+			//$this->load->view('Portalhome',$data);
+			//return;
+		}else{
+
+			
+			$data['resultSY'] = $this->Grades_model->getSY();
+			$data['Grade_Output'] = $this->Grades_model->getGrades();
+			$data['All_Grades'] = $this->Grades_model->AllGrades();
+	
+			if($data['pass'] == 1){
+				
+				$this->load->view('User_header',$data);
+				$this->load->view('User_grades',$data);
+				$this->load->view('User_footer');
+				}
+			else{
+				$data['error'] = "You must Login first";
+				$this->load->view('Portalhome',$data);
+				}	
+
+		}
+
+		
+		
 	}
 	public function get_sem(){
 		
@@ -110,17 +153,48 @@ class Student extends CI_Controller {
 	
 	
 	//**************************BALANCE****************************///
-	public function balance()
+	public function balance_old()
 	{
  		$this->load->model('User_login');
 		$this->load->model('Balance_model');
 		$data['pass'] = $this->User_login->jumpcheck();
+		$rn = $this->session->userdata('Reference_Number');
+		//echo 'RN: '.$rn;
+		$latestbal = $this->Balance_model->GetLatestBalDate_query($rn);
+		if($latestbal->num_rows() == 0){
+			//echo 'no result';
+			return;
+		}
+		foreach($latestbal->result_array() as $latestbal_row){
+			$sy = $latestbal_row['schoolyear'];
+			$sem = $latestbal_row['semester'];
+		}
+		//echo $sy.' '.$sem.'<br>';
+		$outstanding = $this->Balance_model->check_Outstandingbal($rn,$sy,$sem);
+		$totalpaid = $this->Balance_model->check_totalpaid($rn,$sy,$sem);
+		foreach($outstanding->result_array() as $outstanding_row){
+			$ob = $outstanding_row['Fees'];
+		}
+		foreach($totalpaid->result_array() as $totalpaid_row){
+			$tp = $totalpaid_row['AmountofPayment'];
+		}
+		//echo $ob.' '.$tp.'<br>';
+		$bal_check = $ob - $tp;
+		if($bal_check <= 0){
+			$bal_check = 0.00;
+		}
+
+		//Old Acquisition of 
 		$data['Output'] = $this->Balance_model->getbal();
 		//$data['Sem'] = $this->Balance_model->getSem();
+		//echo $ob.'-'.$tp.':'.$bal_check;
+
+		$data['tp'] = $tp;
+		$data['ob'] = $ob;
+		$data['bal_check'] = $bal_check;
 		$data['error'] = "";
 		$data['active'] = "3";
 		if($data['pass'] == 1){
-			
 			$this->load->view('User_header',$data);
 			$this->load->view('User_balance',$data);
 			$this->load->view('User_footer');
@@ -129,6 +203,56 @@ class Student extends CI_Controller {
 			$data['error'] = "You must Login first";
 			$this->load->view('Portalhome',$data);
 			}		
+	}
+	public function balance(){
+
+		$this->load->model('User_login');
+		$this->load->model('Balance_model');
+		$rn = $this->session->userdata('Reference_Number');
+		$latestbal = $this->Balance_model->GetLatestBalDate_query($rn)->result_array();
+		$sy = $latestbal[0]['schoolyear'];
+		$sem = $latestbal[0]['semester'];
+
+		//echo 'rn:'.$rn.'-sy:'.$sy.'-sem'.$sem;
+		
+		$outstanding = $this->Balance_model->getOutstandingbal($rn,$sy,$sem);
+		$totalpaid = $this->Balance_model->gettotalpaid($rn,$sy,$sem);
+		$sembalance = $this->Balance_model->semestralbalance($rn,$sy,$sem);
+		$totalpaidsem = $this->Balance_model->gettotalpaidsemester($rn,$sy,$sem);
+		foreach($outstanding->result_array() as $outstanding_row){
+			$ob = $outstanding_row['Fees'];
+		}
+		foreach($totalpaid->result_array() as $totalpaid_row){
+			$tp = $totalpaid_row['AmountofPayment'];
+		}
+		foreach($sembalance->result_array() as $sembalance_row){
+			$sembal = $sembalance_row['Fees'];
+		}
+		foreach($totalpaidsem->result_array() as $totalpaidsem_row){
+			$sempaid = $totalpaidsem_row['AmountofPayment'];
+		}
+		
+		$data['Outstanding_Balance'] = $ob-$tp;
+		$data['Semestral_Balance'] = $sembal;
+		$data['Sem_total_Paid'] = $sempaid;
+		$data['Total_Paid'] = $sembal - $sempaid;
+		$data['Bal_Schoolyear'] = $sy;
+		$data['Bal_Semester'] = $sem;
+	
+		$this->load->model('User_login');
+		$data['pass'] = $this->User_login->jumpcheck();
+		$data['error'] = "";
+		$data['active'] = "3";
+		if($data['pass'] == 1){
+			$this->load->view('User_header',$data);
+			$this->load->view('User_balance',$data);
+			$this->load->view('User_footer');
+			}
+		else{
+			$data['error'] = "You must Login first";
+			$this->load->view('Portalhome',$data);
+			}	
+
 	}
 	//**************************BALANCE****************************///
 	
@@ -148,11 +272,12 @@ class Student extends CI_Controller {
 			$this->load->view('User_header',$data);
 			$this->load->view('User_schedule',$data);
 			$this->load->view('User_footer');
-			}
+
+		}
 		else{
 			$data['error'] = "You must Login first";
 			$this->load->view('Portalhome',$data);
-			}		
+		}		
 	}
 	public function sched_sem(){
 		
@@ -623,6 +748,7 @@ class Student extends CI_Controller {
 		$this->load->model('User_login');
 		$this->User_login->TimeOut();
 		$this->session->unset_userdata('logged_in');
+		$this->session->unset_userdata('Reference_Number');
 		redirect('index.php/Student/Main','refresh');
 	}
 	//**************************LOGOUT****************************///

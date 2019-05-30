@@ -255,12 +255,26 @@ no-repeat center center fixed;
   <div class="modal-dialog" role="document"> 
     
     <!-- Modal content-->
+    
     <div class="modal-content" id="login" style="margin-top:150px; color:#666; font-family:kalinga, Geneva, sans-serif; padding:20px;">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
+        
         <h4 class="modal-title">Login to Portal</h4>
+      
       </div>
       <div class="modal-body">
+        <!--
+        <div class="row">
+          <div class="col-md-4">
+            <img src="<?php echo base_url(); ?>Assets/img/SoloLogo.png" width="110%" />
+          </div>
+          <div class="col-md-8">
+            <h5>The St. Dominic College of Asia Higher Education Portal is currently under <u>construction</u>.<hr> Thank you for your understanding!</h5>
+          </div>
+        </div>
+        -->
+      
       <form method="post" action="<?php echo site_url();?>index.php/Student/login">
       <label for="ID">Student Number:</label>
       <input type="number" class="form-control" id="U_ID" name="U_ID" value="<?php echo set_value('U_ID'); ?>">
@@ -268,12 +282,16 @@ no-repeat center center fixed;
       <input type="password" class="form-control" id="U_Password" name="U_Password" value="<?php echo set_value('U_Password'); ?>">
       <span style="color:#F00; font-size:14px;"><?php echo $error ?></span></br>
       <a href="<?php echo base_url(); ?>index.php/Student/Reset_password" style="color:#F00; font-size:14px; cursor:pointer; " onClick="pwreset()" target="_blank"><u>Forgot password</u></a>
+      
       </div>
       <div class="modal-footer">
+       
         <button type="submit" id="show" class="btn btn-info center-block">Login</button>
+        
       </form>
       </div>
     </div>
+
   </div>
 </div>
 <!-- Modal --> 

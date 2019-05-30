@@ -33,7 +33,6 @@ class Administrator extends CI_Controller {
 			$this->Main();
 			
 			}
-		
 	}
 	
 	public function Main()

@@ -136,19 +136,20 @@ private function set_session($session_data)
 		'Account_Number' => $session_data['Account_Number'],
 		'logged_in' => "1"
 						   );
-		
+		//print_r($sess_data);
 		$this->session->set_userdata($sess_data);	
 	}
 	
 	
 public function jumpcheck(){
 		
-		$get = $this->session->userdata('logged_in');
-		if($get == 1){
+		$get = $this->session->userdata('Reference_Number');
+		//echo '<br>rf:'.$get;
+		if($get){
 			$check = "1";
 			}
 		else{ $check = "0"; }
-			
+			//echo '<br>Access:'.$check;
 			return $check;
 }
 		
