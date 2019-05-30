@@ -14,6 +14,14 @@ user_guide_src/cilexer/dist/*
 user_guide_src/cilexer/pycilexer.egg-info/*
 /vendor/
 
+/system
+/system_old
+log.txt
+/application/config
+/user_guide
+/jquery-ui-1.12.0
+/C_editor
+
 # IDE Files
 #-------------------------
 /nbproject/
