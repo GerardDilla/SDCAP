@@ -72,11 +72,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $active_group = 'default';
 $query_builder = TRUE;
-
+//LIVE
+/*
 $db['default']['hostname'] = '10.0.0.9';
 $db['default']['username'] = 'schoolsysdb';
 $db['default']['password'] = '01P@zyxwvutsrq';
 $db['default']['database'] = 'schoolsysdb';
+*/
+//LOCAL
+$db['default']['hostname'] = 'localhost';
+$db['default']['username'] = 'root';
+$db['default']['password'] = '';
+$db['default']['database'] = 'schoolsysdb';
+
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
